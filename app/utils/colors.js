@@ -1,0 +1,8 @@
+export const PrimaryColor = '#03A9F4'
+export const DarkPrimaryColor = '#0288D1'
+export const LightPrimaryColor = '#B3E5FC'
+export const TextPrimaryColor = '#FFFFFF'
+export const TextDarkPrimaryColor = '#212121'
+export const TextDarkSecondaryColor = '#757575'
+export const AccentColor = '#4CAF50'
+export const DividerColor = '#BDBDBD'
