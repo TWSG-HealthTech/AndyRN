@@ -2,7 +2,6 @@ import React , { Component } from 'react'
 import { BackAndroid } from 'react-native'
 import { Provider } from 'react-redux'
 import App from './containers/App'
-import AppContainer from './containers/AppContainer'
 import configureStore from './store/configureStore'
 
 import { navigatePop } from './actions/navigation'
