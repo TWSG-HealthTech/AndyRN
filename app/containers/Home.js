@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { StyleSheet, View, Text, TouchableNativeFeedback, Image } from 'react-native'
+import { MKSpinner } from 'react-native-material-kit'
 import Avatar from '../components/Avatar'
 import ScheduleList from '../components/ScheduleList'
 import { navigatePush } from '../actions/navigation'
+import { logout } from '../actions/nurse'
 import { syncSchedule } from '../actions/schedules'
 import * as C from '../utils/colors'
 
 class Home extends Component {
   render () {
-    let { nurse, schedules, showSchedule, login, sync } = this.props
+    let { nurse, schedules, inSync, showSchedule, login, sync, logout } = this.props
     return (
       <View style={styles.container}>
         <View style={styles.nurseContainer}>
@@ -17,17 +19,20 @@ class Home extends Component {
           <Text style={styles.nurseName}>{nurse ? nurse.name : 'Guest'}</Text>
           <View style={styles.buttonContainer}>
             {nurse ?
-              <TouchableNativeFeedback onPress={sync}>
-                <View style={styles.button}>
-                  <Text style={styles.label}>SYNC</Text>
+              <TouchableNativeFeedback onPress={logout}>
+                <View style={[styles.button, {backgroundColor: 'red', marginRight: 10}]}>
+                  <Text style={styles.label}>LOGOUT</Text>
                 </View>
-              </TouchableNativeFeedback>
-              :
-              <TouchableNativeFeedback onPress={login}>
-                <View style={styles.button}>
-                  <Text style={styles.label}>LOGIN</Text>
-                </View>
-              </TouchableNativeFeedback>
+              </TouchableNativeFeedback> :
+              null
+            }
+            {inSync ?
+              <MKSpinner /> :
+                <TouchableNativeFeedback onPress={nurse ? sync : login}>
+                  <View style={styles.button}>
+                    <Text style={styles.label}>{nurse ? 'SYNC' : 'LOGIN'}</Text>
+                  </View>
+                </TouchableNativeFeedback>
             }
           </View>
         </View>
@@ -75,7 +80,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     nurse: state.nurse,
-    schedules: state.schedules
+    schedules: state.schedules,
+    inSync: state.app.inSync
   }
 }
 
@@ -83,7 +89,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showSchedule: (id) => { dispatch(navigatePush({key: 'Schedule', title: 'Schedule', scheduleId: id})) },
     login: () => { dispatch(navigatePush({key: 'Login', title: 'Login'})) },
-    sync: () => { dispatch(syncSchedule()) }
+    sync: () => { dispatch(syncSchedule()) },
+    logout: () => { dispatch(logout()) }
   }
 }
 

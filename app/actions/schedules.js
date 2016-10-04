@@ -1,13 +1,34 @@
+import { AsyncStorage } from 'react-native'
+
+const moment = require('moment')
+
 export const ADD_VITALS = 'ADD_VITALS'
 
 export function addVitals(scheduleId, vitals) {
-  return {
-    type: ADD_VITALS,
-    scheduleId,
-    vitals: {
-      ...vitals,
-      local: true
+  return (dispatch, getState) => {
+    dispatch({
+      type: ADD_VITALS,
+      scheduleId,
+      vitals: {
+        ...vitals,
+        local: true
+      }
+    })
+    dispatch(saveSchedules(getState().schedules))
+  }
+}
+
+export const REQ_SYNC = 'REQ_SYNC'
+function requestSync() {
+    return {
+      type: REQ_SYNC
     }
+}
+
+export const DONE_SYNC = 'DONE_SYNC'
+function doneSync() {
+  return {
+    type: DONE_SYNC
   }
 }
 
@@ -19,6 +40,23 @@ export function setSchedules(schedules) {
   }
 }
 
+export function saveSchedules(schedules) {
+  return (dispatch) => {
+    return AsyncStorage.setItem('schedules', JSON.stringify(schedules))
+  }
+}
+
+export function loadSchedules() {
+  return (dispatch) => {
+    AsyncStorage.getItem('schedules')
+    .then(schedules => {
+      if(schedules != null) {
+        dispatch(setSchedules(JSON.parse(schedules)))
+      }
+    })
+  }
+}
+
 function findPatientById(patientId, patients) {
   return patients.find(p => p.id === patientId)
 }
@@ -26,6 +64,7 @@ function findPatientById(patientId, patients) {
 function findVitalsByPatientId(patientId, vitals) {
   return vitals
   .filter(v => v.patient_id === patientId)
+  .filter(v => moment().isSame(v.updated_at, 'day'))
   .map(v => ({
     id: v.id,
     height: v.height,
@@ -40,6 +79,9 @@ function findVitalsByPatientId(patientId, vitals) {
 
 export function syncSchedule() {
   return (dispatch, getState) => {
+
+    dispatch(requestSync())
+
     let { nurse, schedules } = getState()
 
     const localVitals = schedules.map(s => s.vitals.filter(v => v.local === true).map(v => ({
@@ -62,7 +104,7 @@ export function syncSchedule() {
         body: JSON.stringify(v)
       })))
       .then(() => Promise.all([
-        fetch(`https://young-journey-22645.herokuapp.com/visiting_schedules?nurse_id=${nurse.id}`, {
+        fetch(encodeURI(`https://young-journey-22645.herokuapp.com/visiting_schedules?nurse_id=${nurse.id}&appointment_time=${moment().format('DD/MM/YYYY')}`), {
           headers: {
             'Accept': 'application/json'
           }
@@ -86,7 +128,12 @@ export function syncSchedule() {
         vitals: findVitalsByPatientId(s.patient_id, vitals)
       }))
       dispatch(setSchedules(sList))
+      dispatch(saveSchedules(sList))
+      dispatch(doneSync())
     })
-    .catch(e => console.error(e))
+    .catch(e => {
+      console.error(e)
+      dispatch(doneSync())
+    })
   }
 }

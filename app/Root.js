@@ -6,8 +6,13 @@ import AppContainer from './containers/AppContainer'
 import configureStore from './store/configureStore'
 
 import { navigatePop } from './actions/navigation'
+import { loadNurse } from './actions/nurse'
+import { loadSchedules } from './actions/schedules'
 
 const store = configureStore()
+
+store.dispatch(loadNurse())
+store.dispatch(loadSchedules())
 
 BackAndroid.addEventListener('hardwareBackPress', () => {
     store.dispatch(navigatePop())
