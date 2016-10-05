@@ -20,6 +20,7 @@ class VitalsList extends Component {
   render () {
     return (
       <ListView
+        enableEmptySections={true}
         dataSource={this.state.dataSource}
         renderRow={(rowData) => <VitalsItem vital={rowData}/>}
       />

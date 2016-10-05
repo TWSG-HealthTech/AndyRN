@@ -31,6 +31,7 @@ class ScheduleList extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>Your Schedule of Today</Text>
         <ListView
+          enableEmptySections={true}
           dataSource={this.state.dataSource}
           renderRow={(rowData) => <ScheduleItem schedule={rowData} onPress={this.props.showSchedule}/>}
         />

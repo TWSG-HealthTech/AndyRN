@@ -1,6 +1,7 @@
 import { navigatePop } from './navigation'
 import { AsyncStorage } from 'react-native'
 import { saveSchedules, setSchedules } from './schedules'
+import { HOST } from '../utils/config'
 
 export const REQ_LOGIN = 'REQ_LOGIN'
 
@@ -47,10 +48,9 @@ function errorLogin(error) {
 export function login(email, password) {
   return (dispatch) => {
     dispatch({type: REQ_LOGIN})
-    fetch('https://young-journey-22645.herokuapp.com/nurses', {
+    fetch(`${HOST}nurses`, {
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Accept': 'application/json'
       }
     })
     .then(response => response.json())

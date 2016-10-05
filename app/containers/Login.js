@@ -36,6 +36,7 @@ class Login extends React.Component {
           <TextInput
             style={styles.input}
             editable={!this.props.inProgress}
+            secureTextEntry={true}
             onChangeText={(text) => this.setState({...this.state, password: text})}
             value={this.state.password}
             returnKeyType="done"
