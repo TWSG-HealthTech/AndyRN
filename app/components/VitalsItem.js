@@ -11,8 +11,9 @@ class VitalsItem extends Component {
           Vitals measured at {timeMeasured.toLocaleString()}
         </Text>
         <Text style={styles.obs}>
-          {height}, {weight}, {temperature}, {pulse}, {bpHigh}, {bpLow}, {''+local}
+          H:{height}, W:{weight}, T:{temperature}, P:{pulse}, BP:{bpHigh}/{bpLow}
         </Text>
+        {local ? <Text>New</Text> : null}
       </View>
     )
   }

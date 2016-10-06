@@ -141,7 +141,7 @@ function fetchVitalRecords() {
 function mergeAsLocalSchedules(schedules, patients, vitals) {
   return schedules.map(s => ({
     id: s.id,
-    time: s.appointment_time,
+    time: moment(s.appointment_time),
     patient: findPatientById(s.patient_id, patients),
     vitals: findVitalsByPatientId(s.patient_id, vitals)
   }))

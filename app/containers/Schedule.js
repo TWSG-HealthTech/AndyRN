@@ -5,6 +5,8 @@ import { navigatePop, navigatePush } from '../actions/navigation'
 import VitalsList from '../components/VitalsList'
 import * as C from '../utils/colors'
 
+const moment = require('moment')
+
 class Schedule extends Component {
   render () {
     let { schedule, addVitals } = this.props;
@@ -12,7 +14,7 @@ class Schedule extends Component {
       <View style={styles.container}>
         <View style={styles.patientInfo}>
           <Text style={styles.title}>{schedule.patient.name}</Text>
-          <Text style={styles.subtitle}>Scheduled Time: {schedule.time}</Text>
+          <Text style={styles.subtitle}>Scheduled Time: {moment(schedule.time).format('MMMM Do YYYY h:mm a')}</Text>
         </View>
         <View>
           <TouchableNativeFeedback onPress={() => addVitals(schedule.id)}>
